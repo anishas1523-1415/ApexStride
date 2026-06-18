@@ -76,11 +76,18 @@ export async function analyzeVideo(file: File, sportType: string): Promise<TaskR
   formData.append('sport_type', sportType)
 
   const supabase = createClient()
-  const { data: { session } } = await supabase.auth.getSession()
+  const { data: { session }, error } = await supabase.auth.getSession()
 
-  const headers: Record<string, string> = {}
-  if (session?.access_token) {
-    headers['Authorization'] = `Bearer ${session.access_token}`
+  if (!session) {
+    console.error("No active session found. Redirecting to login.")
+    window.location.href = "/login"
+    throw new Error('Unauthenticated user context')
+  }
+
+  console.log("Attaching Token:", session.access_token.substring(0, 10) + "...")
+
+  const headers: Record<string, string> = {
+    'Authorization': `Bearer ${session.access_token}`
   }
 
   const res = await fetch(`${API_BASE}/analyze`, {
