@@ -1,0 +1,55 @@
+@import "tailwindcss";
+
+@theme {
+  --color-background: #050810;
+  --color-card: rgba(255, 255, 255, 0.05);
+  --color-primary: #10B981;
+  --color-error: #EF4444;
+  --color-warning: #F59E0B;
+  
+  --animate-pulse-slow: pulse-slow 8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  
+  @keyframes pulse-slow {
+    0%, 100% { opacity: 0.2; transform: scale(1); }
+    50% { opacity: 0.3; transform: scale(1.05); }
+  }
+}
+
+:root {
+  --background: #050810;
+  --card: rgba(255, 255, 255, 0.05);
+  --primary: #10B981;
+  --error: #EF4444;
+  --warning: #F59E0B;
+  --text-main: #F1F5F9;
+  --text-muted: #94A3B8;
+}
+
+body {
+  color: var(--text-main);
+  background: radial-gradient(ellipse at top, #0f172a, #050810, #000000);
+  font-family: var(--font-sans);
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 1rem;
+}
+
+.glow-cyan {
+  box-shadow: 0 0 20px rgba(34, 211, 238, 0.4);
+}
+
+.glow-cyan-hover:hover {
+  box-shadow: 0 0 30px rgba(34, 211, 238, 0.6);
+}
+
+.text-gradient {
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-image: linear-gradient(to right, #22d3ee, #34d399);
+}

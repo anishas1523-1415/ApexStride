@@ -1,0 +1,1 @@
+# AuraKinematics application package init

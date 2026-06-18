@@ -1,0 +1,24 @@
+{
+  "sport_type": "cricket_batting",
+  "kinematic_timeline": [
+    {
+      "frame_index": 0,
+      "timestamp_seconds": 0.0,
+      "landmarks": {
+        "NOSE": { "x": 0.5, "y": 0.3, "z": -0.2, "visibility": 0.99 },
+        "LEFT_SHOULDER": { "x": 0.55, "y": 0.4, "z": -0.1, "visibility": 0.99 },
+        "RIGHT_SHOULDER": { "x": 0.45, "y": 0.4, "z": -0.1, "visibility": 0.99 },
+        "LEFT_ELBOW": { "x": 0.58, "y": 0.5, "z": -0.15, "visibility": 0.99 },
+        "RIGHT_ELBOW": { "x": 0.42, "y": 0.5, "z": -0.15, "visibility": 0.99 },
+        "LEFT_WRIST": { "x": 0.6, "y": 0.6, "z": -0.2, "visibility": 0.99 },
+        "RIGHT_WRIST": { "x": 0.4, "y": 0.6, "z": -0.2, "visibility": 0.99 },
+        "LEFT_HIP": { "x": 0.53, "y": 0.65, "z": 0.0, "visibility": 0.99 },
+        "RIGHT_HIP": { "x": 0.47, "y": 0.65, "z": 0.0, "visibility": 0.99 },
+        "LEFT_KNEE": { "x": 0.55, "y": 0.8, "z": -0.05, "visibility": 0.99 },
+        "RIGHT_KNEE": { "x": 0.45, "y": 0.8, "z": -0.05, "visibility": 0.99 },
+        "LEFT_ANKLE": { "x": 0.55, "y": 0.95, "z": 0.0, "visibility": 0.99 },
+        "RIGHT_ANKLE": { "x": 0.45, "y": 0.95, "z": 0.0, "visibility": 0.99 }
+      }
+    }
+  ]
+}
