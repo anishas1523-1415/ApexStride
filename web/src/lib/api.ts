@@ -68,13 +68,24 @@ export interface TaskStatusResponse {
   result?: AnalysisResponse;
 }
 
+import { createClient } from '@/utils/supabase/client'
+
 export async function analyzeVideo(file: File, sportType: string): Promise<TaskResponse> {
   const formData = new FormData()
   formData.append('file', file)
   formData.append('sport_type', sportType)
 
+  const supabase = createClient()
+  const { data: { session } } = await supabase.auth.getSession()
+
+  const headers: Record<string, string> = {}
+  if (session?.access_token) {
+    headers['Authorization'] = `Bearer ${session.access_token}`
+  }
+
   const res = await fetch(`${API_BASE}/analyze`, {
     method: 'POST',
+    headers,
     body: formData,
   })
   

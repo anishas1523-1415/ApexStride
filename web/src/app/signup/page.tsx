@@ -36,48 +36,52 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-950 p-4">
-      <div className="max-w-md w-full space-y-8 glass-card p-10 rounded-3xl border border-slate-800 shadow-2xl">
-        <div className="text-center">
-          <h2 className="text-3xl font-extrabold text-white">Create an Account</h2>
-          <p className="mt-2 text-sm text-slate-400">
-            Or <a href="/login" className="text-[#10B981] hover:text-[#059669]">sign in to your existing account</a>
+    <div className="min-h-[75vh] flex items-center justify-center p-4">
+      <div className="max-w-md w-full space-y-8 bg-white/5 backdrop-blur-xl border border-white/10 p-10 rounded-2xl shadow-[0_0_50px_rgba(0,0,0,0.4)]">
+        <div className="text-center space-y-2">
+          <h2 className="text-3xl font-extrabold text-white tracking-tight uppercase">
+            Create <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-emerald-400">Account</span>
+          </h2>
+          <p className="text-sm text-slate-400">
+            Or <a href="/login" className="text-cyan-400 hover:text-cyan-300 font-bold underline decoration-cyan-500/30">sign in to existing account</a>
           </p>
         </div>
         
         {success ? (
-          <div className="bg-[#10B981]/10 border border-[#10B981]/30 p-6 rounded-xl text-center">
-            <h3 className="text-[#10B981] font-bold text-lg mb-2">Check your email</h3>
-            <p className="text-slate-300 text-sm">We've sent a confirmation link to {email}. Please click the link to verify your account before logging in.</p>
+          <div className="bg-emerald-500/10 border border-emerald-500/20 p-6 rounded-xl text-center space-y-4">
+            <h3 className="text-emerald-400 font-bold text-lg">Verification Email Sent</h3>
+            <p className="text-slate-300 text-sm leading-relaxed">
+              We've dispatched a confirmation link to <span className="text-white font-semibold font-mono">{email}</span>. Click the link to authenticate.
+            </p>
             <button 
               onClick={() => router.push('/login')}
-              className="mt-6 px-4 py-2 border border-[#10B981] text-[#10B981] rounded-xl hover:bg-[#10B981]/10 transition"
+              className="mt-4 w-full py-3 bg-white/5 hover:bg-white/10 border border-white/10 text-white rounded-xl font-bold transition-all"
             >
-              Back to Login
+              Proceed to Login
             </button>
           </div>
         ) : (
           <form className="mt-8 space-y-6" onSubmit={handleSignup}>
-            <div className="rounded-md shadow-sm space-y-4">
+            <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-slate-300">Email address</label>
+                <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-1.5">Email Address</label>
                 <input
                   name="email"
                   type="email"
                   required
-                  className="mt-1 appearance-none relative block w-full px-3 py-3 border border-slate-700 bg-slate-900/50 text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-[#10B981] focus:border-transparent sm:text-sm"
-                  placeholder="Email address"
+                  className="appearance-none block w-full px-4 py-3.5 border border-white/10 bg-slate-950/80 text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all sm:text-sm font-medium"
+                  placeholder="athlete@aurakinematics.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-300">Password</label>
+                <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-1.5">Password</label>
                 <input
                   name="password"
                   type="password"
                   required
-                  className="mt-1 appearance-none relative block w-full px-3 py-3 border border-slate-700 bg-slate-900/50 text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-[#10B981] focus:border-transparent sm:text-sm"
+                  className="appearance-none block w-full px-4 py-3.5 border border-white/10 bg-slate-950/80 text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all sm:text-sm font-medium"
                   placeholder="Password (min 6 characters)"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -85,15 +89,15 @@ export default function SignupPage() {
               </div>
             </div>
 
-            {error && <div className="text-red-500 text-sm text-center bg-red-500/10 p-3 rounded-xl border border-red-500/20">{error}</div>}
+            {error && <div className="text-red-400 text-sm text-center bg-red-950/20 p-4 rounded-xl border border-red-500/20 font-semibold">{error}</div>}
 
             <div>
               <button
                 type="submit"
                 disabled={loading}
-                className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-xl text-black bg-[#10B981] hover:bg-[#059669] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900 focus:ring-[#10B981] transition disabled:opacity-50"
+                className="w-full py-4 bg-cyan-500 text-slate-950 rounded-xl font-bold tracking-wide uppercase disabled:opacity-40 hover:bg-cyan-400 shadow-[0_0_15px_rgba(6,182,212,0.5)] hover:shadow-[0_0_25px_rgba(16,185,129,0.7)] transition-all duration-300 disabled:shadow-none"
               >
-                {loading ? 'Creating account...' : 'Create Account'}
+                {loading ? 'Creating Account...' : 'Register Account'}
               </button>
             </div>
           </form>
