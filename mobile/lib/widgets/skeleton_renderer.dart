@@ -35,12 +35,12 @@ class SkeletonRenderer extends StatefulWidget {
   final bool showGhostPro;
 
   const SkeletonRenderer({
-    Key? key,
+    super.key,
     required this.videoController,
     required this.kinematicTimeline,
     this.baselinePro,
     this.showGhostPro = false,
-  }) : super(key: key);
+  });
 
   @override
   State<SkeletonRenderer> createState() => _SkeletonRendererState();

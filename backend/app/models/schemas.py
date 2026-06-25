@@ -117,6 +117,7 @@ class AnalysisResponse(BaseModel):
     coaching_insights: list[CoachingInsight]
     overall_score: float
     impact_timestamp: float | None = None
+    gemini_summary: str | None = None
 
 
 class AnalysisRequest(BaseModel):

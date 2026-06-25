@@ -177,10 +177,10 @@ def _run_pipeline(video_path: str, sport_type: str) -> AnalysisResponse:
 
     try:
         # ---- Video I/O ----------------------------------------------- #
-        with VideoAdapter() as adapter:
-            adapter.open(video_path)
+        with VideoAdapter(video_path) as adapter:
             metadata = adapter.get_metadata()
-            fps = metadata.fps if metadata.fps > 0 else 30.0
+            fps = metadata.get("fps", 0)
+            fps = fps if fps > 0 else 30.0
             
             # --- Acoustic Cropping ---
             impact_timestamp = get_impact_timestamp(video_path)
@@ -244,6 +244,7 @@ def _run_pipeline(video_path: str, sport_type: str) -> AnalysisResponse:
             coaching_insights=insights,
             overall_score=round(score, 2),
             impact_timestamp=impact_timestamp,
+            gemini_summary=None,
         )
 
     finally:
@@ -340,6 +341,37 @@ async def get_analysis_record(record_id: str, current_user: User = Depends(get_c
         overall_score=record.overall_score,
         impact_timestamp=record.impact_timestamp
     )
+
+from app.models.db_models import GhostBaseline, Achievement, UserAchievement
+
+@router.get("/ghosts/{sport_type}", summary="Get ghost baseline for a sport")
+async def get_ghost_baseline(sport_type: str, db = Depends(get_async_db)):
+    result = await db.execute(
+        select(GhostBaseline).filter(GhostBaseline.sport_type == sport_type)
+    )
+    baseline = result.scalars().first()
+    if not baseline:
+        raise HTTPException(status_code=404, detail=f"No baseline found for {sport_type}")
+    return {"sport_type": baseline.sport_type, "kinematic_timeline": baseline.kinematic_timeline}
+
+@router.get("/achievements", summary="Get user achievements")
+async def get_user_achievements(current_user: User = Depends(get_current_user), db = Depends(get_async_db)):
+    result = await db.execute(
+        select(UserAchievement, Achievement)
+        .join(Achievement, UserAchievement.achievement_id == Achievement.id)
+        .filter(UserAchievement.user_id == current_user.id)
+    )
+    records = result.all()
+    
+    return [
+        {
+            "id": str(ach.id),
+            "title": ach.title,
+            "description": ach.description,
+            "icon": ach.icon,
+            "unlocked_at": ua.unlocked_at.isoformat()
+        } for ua, ach in records
+    ]
 
 # --------------------------------------------------------------------- #
 # GET /api/v1/health                                                     #

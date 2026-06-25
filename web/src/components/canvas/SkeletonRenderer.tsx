@@ -8,9 +8,10 @@ interface SkeletonRendererProps {
   kinematicTimeline: FrameKinematics[]
   showGhostPro?: boolean
   impactTimestamp?: number
+  sportType: string
 }
 
-export default function SkeletonRenderer({ videoUrl, kinematicTimeline, showGhostPro = false, impactTimestamp }: SkeletonRendererProps) {
+export default function SkeletonRenderer({ videoUrl, kinematicTimeline, showGhostPro = false, impactTimestamp, sportType }: SkeletonRendererProps) {
   const videoRef = useRef<HTMLVideoElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
@@ -19,13 +20,15 @@ export default function SkeletonRenderer({ videoUrl, kinematicTimeline, showGhos
 
   useEffect(() => {
     if (showGhostPro) {
-      // Fetch dummy static json for ghost mode
-      fetch('/baseline_pro.json')
-        .then(res => res.json())
-        .then(data => setBaselinePro(data.kinematic_timeline))
-        .catch(err => console.warn("Ghost pro data not found", err))
+      // Fetch dynamic ghost baseline from backend
+      import('@/lib/api').then(({ API_BASE }) => {
+        fetch(`${API_BASE}/ghosts/${sportType}`)
+          .then(res => res.json())
+          .then(data => setBaselinePro(data.kinematic_timeline))
+          .catch(err => console.warn("Ghost pro data not found", err))
+      })
     }
-  }, [showGhostPro])
+  }, [showGhostPro, sportType])
 
   useEffect(() => {
     const video = videoRef.current

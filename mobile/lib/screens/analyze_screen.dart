@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../config/theme.dart';
+import 'camera_screen.dart';
 
 class AnalyzeScreen extends StatefulWidget {
   const AnalyzeScreen({super.key});
@@ -46,17 +47,47 @@ class _AnalyzeScreenState extends State<AnalyzeScreen> {
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
             ] else ...[
-              const Icon(Icons.upload_file, size: 80, color: AppTheme.textMuted),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.videocam, size: 60, color: Colors.cyanAccent),
+                  const SizedBox(width: 20),
+                  const Icon(Icons.upload_file, size: 60, color: AppTheme.textMuted),
+                ],
+              ),
               const SizedBox(height: 24),
               const Text(
-                'Upload Video',
+                'Provide Media',
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 48),
-              ElevatedButton(
+              ElevatedButton.icon(
+                icon: const Icon(Icons.camera_alt),
+                label: const Text('Record Live Video', style: TextStyle(fontSize: 18)),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.cyanAccent,
+                  foregroundColor: Colors.black,
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                ),
+                onPressed: () {
+                  final sportId = ModalRoute.of(context)?.settings.arguments as String? ?? 'cricket';
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => CameraScreen(sportId: sportId)),
+                  );
+                },
+              ),
+              const SizedBox(height: 16),
+              OutlinedButton.icon(
+                icon: const Icon(Icons.upload_file),
+                label: const Text('Select File & Analyze', style: TextStyle(fontSize: 18)),
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: Colors.white,
+                  side: BorderSide(color: Colors.white.withOpacity(0.3)),
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                ),
                 onPressed: _startAnalysis,
-                child: const Text('Select File & Analyze', style: TextStyle(fontSize: 18)),
               ),
             ]
           ],

@@ -1,13 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'config/theme.dart';
 import 'screens/home_screen.dart';
 import 'screens/analyze_screen.dart';
-
+import 'screens/auth_screen.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: ".env");
+  
+  await Supabase.initialize(
+    url: dotenv.env['SUPABASE_URL']!,
+    anonKey: dotenv.env['SUPABASE_ANON_KEY']!,
+  );
+
   runApp(
     MultiProvider(
       providers: [
@@ -27,9 +35,11 @@ class AuraKinematicsApp extends StatelessWidget {
     return MaterialApp(
       title: 'AuraKinematics',
       theme: AppTheme.darkTheme,
-      initialRoute: '/',
+      home: Supabase.instance.client.auth.currentSession == null 
+          ? const AuthScreen() 
+          : const HomeScreen(),
       routes: {
-        '/': (context) => const HomeScreen(),
+        '/home': (context) => const HomeScreen(),
         '/analyze': (context) => const AnalyzeScreen(),
       },
     );

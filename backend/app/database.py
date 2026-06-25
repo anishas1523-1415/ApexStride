@@ -24,7 +24,8 @@ _PROD_URL = os.getenv("DATABASE_URL")
 # Async Engine (For FastAPI)
 if _PROD_URL:
     # If production url is provided (e.g., Neon/Supabase), convert it to asyncpg
-    ASYNC_DATABASE_URL = _PROD_URL.replace("postgresql://", "postgresql+asyncpg://")
+    # asyncpg doesn't support sslmode=require in the connection string
+    ASYNC_DATABASE_URL = _PROD_URL.replace("postgresql://", "postgresql+asyncpg://").replace("?sslmode=require", "")
 else:
     ASYNC_DATABASE_URL = f"postgresql+asyncpg://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
     

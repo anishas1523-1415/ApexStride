@@ -6,7 +6,7 @@ class GoalPostPopWidget extends StatefulWidget {
   final Widget child;
   final Duration delay;
 
-  const GoalPostPopWidget({Key? key, required this.child, this.delay = Duration.zero}) : super(key: key);
+  const GoalPostPopWidget({super.key, required this.child, this.delay = Duration.zero});
 
   @override
   State<GoalPostPopWidget> createState() => _GoalPostPopWidgetState();
@@ -54,7 +54,7 @@ class PlayerDiveSlideWidget extends StatefulWidget {
   final Widget child;
   final Duration delay;
 
-  const PlayerDiveSlideWidget({Key? key, required this.child, this.delay = Duration.zero}) : super(key: key);
+  const PlayerDiveSlideWidget({super.key, required this.child, this.delay = Duration.zero});
 
   @override
   State<PlayerDiveSlideWidget> createState() => _PlayerDiveSlideWidgetState();

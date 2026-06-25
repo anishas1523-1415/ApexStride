@@ -129,6 +129,20 @@ class CoachingEngine:
                     "to synchronise with the upper body."
                 ),
             },
+            "head_drop": {
+                "min_angle": 15.0,
+                "max_angle": 45.0,
+                "optimal_angle": 30.0,
+                "phase": "head_alignment",
+                "tip_below": (
+                    "Your head is dropping down too far during the stroke. "
+                    "Keep your head steady and eyes level to track the ball accurately."
+                ),
+                "tip_above": (
+                    "Your head is too stiff and upright. Allow a natural lean into "
+                    "the shot to transfer your body weight forward."
+                ),
+            },
         },
 
         # ============================================================== #
@@ -246,6 +260,20 @@ class CoachingEngine:
                     "Your legs are too straight; you're not loading "
                     "enough for the jump. Bend your knees more to "
                     "generate upward thrust."
+                ),
+            },
+            "spine_alignment": {
+                "min_angle": 150.0,
+                "max_angle": 180.0,
+                "optimal_angle": 165.0,
+                "phase": "air_arch",
+                "tip_below": (
+                    "Your spine is over-arched during the jump. This risks lower "
+                    "back injury. Keep your core tighter while airborne."
+                ),
+                "tip_above": (
+                    "Your spine is too straight in the air. A slight arch allows "
+                    "for a stronger core snap when executing the smash."
                 ),
             },
         },

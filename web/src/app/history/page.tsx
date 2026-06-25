@@ -1,93 +1,137 @@
-"use client";
-
-import { useEffect, useState } from "react";
-import { fetchWithAuth } from "@/lib/apiClient";
-import { useAuth } from "@/context/AuthContext";
-import { motion } from "framer-motion";
-import { useRouter } from "next/navigation";
-
-interface AnalysisRecord {
-  id: string;
-  sport_type: string;
-  overall_score: number;
-  created_at: string;
-  filename: string;
-}
+'use client'
+import { useEffect, useState } from 'react'
+import { API_BASE } from '@/lib/api'
+import { createClient } from '@/utils/supabase/client'
+import { motion } from 'framer-motion'
+import Link from 'next/link'
 
 export default function HistoryPage() {
-  const router = useRouter();
-  const { user, loading } = useAuth();
-  const [records, setRecords] = useState<AnalysisRecord[]>([]);
-  const [loadingRecords, setLoadingRecords] = useState(true);
-
-  const loadHistory = async () => {
-    try {
-      // In a real app, you would have a GET /api/v1/history endpoint
-      // We assume it's created or we'll add it to the backend soon
-      const res = await fetchWithAuth("/history");
-      if (res.ok) {
-        const data = await res.json();
-        setRecords(data);
-      }
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoadingRecords(false);
-    }
-  };
+  const [history, setHistory] = useState<any[]>([])
+  const [achievements, setAchievements] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    if (!loading && user) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      loadHistory();
+    const fetchHistory = async () => {
+      const supabase = createClient()
+      const { data: { session } } = await supabase.auth.getSession()
+      if (!session) return
+
+      const headers = { 'Authorization': `Bearer ${session.access_token}` }
+      
+      const [histRes, achRes] = await Promise.all([
+        fetch(`${API_BASE}/history`, { headers }),
+        fetch(`${API_BASE}/achievements`, { headers })
+      ])
+
+      if (histRes.ok) setHistory(await histRes.json())
+      if (achRes.ok) setAchievements(await achRes.json())
+      setLoading(false)
     }
-  }, [loading, user]);
+    fetchHistory()
+  }, [])
 
-  if (loading) return <div className="text-center mt-20 text-slate-400">Loading profile...</div>;
-
-  if (!user) {
-    return <div className="text-center mt-20 text-slate-400">You must be logged in to view history.</div>;
+  if (loading) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-cyan-400"></div>
+      </div>
+    )
   }
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="max-w-5xl mx-auto mt-10"
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="max-w-7xl mx-auto px-4 py-12"
     >
-      <h1 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#10B981] to-[#06B6D4] mb-8">
-        Your Kinematic History
-      </h1>
-      
-      {loadingRecords ? (
-        <div className="animate-pulse flex flex-col space-y-4">
-          {[1, 2, 3].map(i => (
-            <div key={i} className="h-20 bg-slate-800/50 rounded-lg border border-[#10B981]/20"></div>
-          ))}
+      <div className="mb-12">
+        <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-white mb-4">
+          Athlete <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400">Dashboard</span>
+        </h1>
+        <p className="text-slate-400">Track your progress, review past telemetry, and unlock achievements.</p>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        
+        {/* Left Column: Achievements */}
+        <div className="lg:col-span-1 space-y-6">
+          <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-8">
+            <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
+              <span className="text-yellow-400">🏆</span> Unlocked Badges
+            </h3>
+            {achievements.length === 0 ? (
+              <p className="text-slate-500 text-sm italic">Analyze your first video to unlock achievements.</p>
+            ) : (
+              <ul className="space-y-4">
+                {achievements.map((ach: any) => (
+                  <li key={ach.id} className="flex items-center gap-4 p-4 bg-slate-900/50 rounded-xl border border-white/5 hover:border-yellow-500/30 transition-colors">
+                    <div className="text-4xl bg-white/5 p-3 rounded-full">{ach.icon}</div>
+                    <div>
+                      <h4 className="text-white font-bold">{ach.title}</h4>
+                      <p className="text-xs text-slate-400">{ach.description}</p>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+
+          <div className="bg-gradient-to-br from-cyan-900/40 to-blue-900/40 border border-cyan-500/20 rounded-3xl p-8 text-center">
+            <h3 className="text-xl font-bold text-cyan-400 mb-2">Record New Session</h3>
+            <p className="text-sm text-slate-300 mb-6">Capture new telemetry to beat your previous scores.</p>
+            <Link href="/analyze" className="inline-block px-8 py-3 bg-cyan-500 text-slate-950 rounded-xl font-bold uppercase tracking-wide hover:bg-cyan-400 transition-colors">
+              Analyze Now
+            </Link>
+          </div>
         </div>
-      ) : records.length === 0 ? (
-        <div className="text-center py-20 bg-slate-800/50 rounded-lg border border-[#10B981]/20">
-          <p className="text-slate-400">No analysis records found.</p>
-        </div>
-      ) : (
-        <div className="grid gap-4">
-          {records.map(record => (
-            <div key={record.id} onClick={() => router.push(`/results/${record.id}`)} className="bg-slate-900/80 backdrop-blur border border-[#10B981]/30 p-6 rounded-xl hover:border-[#10B981] transition-colors flex justify-between items-center cursor-pointer shadow-[0_0_15px_rgba(16,185,129,0.1)]">
-              <div>
-                <p className="text-sm text-slate-400">{new Date(record.created_at).toLocaleDateString()}</p>
-                <h3 className="text-lg font-semibold text-slate-100 capitalize">{record.sport_type.replace('_', ' ')}</h3>
-                <p className="text-xs text-slate-500 mt-1">{record.filename}</p>
+
+        {/* Right Column: History */}
+        <div className="lg:col-span-2">
+          <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-8 h-full">
+            <h3 className="text-xl font-bold text-white mb-6">Recent Biomechanical Analyses</h3>
+            
+            {history.length === 0 ? (
+              <div className="text-center py-12">
+                <p className="text-slate-500">No telemetry recorded yet.</p>
               </div>
-              <div className="text-right">
-                <span className={`text-2xl font-bold ${record.overall_score >= 80 ? 'text-[#10B981]' : record.overall_score >= 50 ? 'text-amber-500' : 'text-red-500'}`}>
-                  {record.overall_score.toFixed(1)}
-                </span>
-                <p className="text-xs text-slate-400">Score</p>
+            ) : (
+              <div className="space-y-4">
+                {history.map((record: any) => (
+                  <div key={record.id} className="flex flex-col md:flex-row md:items-center justify-between p-6 bg-slate-900/50 rounded-2xl border border-white/5 hover:border-cyan-500/30 transition-all group">
+                    <div className="mb-4 md:mb-0">
+                      <div className="flex items-center gap-3 mb-2">
+                        <span className="px-3 py-1 bg-cyan-950/50 text-cyan-400 text-xs font-bold rounded-full uppercase tracking-wider">
+                          {record.sport_type.replace(/_/g, ' ')}
+                        </span>
+                        <span className="text-xs text-slate-500 font-mono">
+                          {new Date(record.created_at).toLocaleDateString()}
+                        </span>
+                      </div>
+                      <p className="text-white font-medium text-sm truncate max-w-xs">{record.filename}</p>
+                    </div>
+                    
+                    <div className="flex items-center gap-6">
+                      <div className="text-center">
+                        <p className="text-[10px] text-slate-400 uppercase tracking-widest mb-1">Score</p>
+                        <p className={`text-2xl font-bold ${record.overall_score >= 80 ? 'text-emerald-400' : record.overall_score >= 60 ? 'text-yellow-400' : 'text-red-400'}`}>
+                          {record.overall_score}
+                        </p>
+                      </div>
+                      <Link 
+                        href={`/analyze/${record.id}`} 
+                        className="p-3 bg-white/5 text-white rounded-xl hover:bg-cyan-500 hover:text-slate-950 transition-colors shadow-lg"
+                      >
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                      </Link>
+                    </div>
+                  </div>
+                ))}
               </div>
-            </div>
-          ))}
+            )}
+          </div>
         </div>
-      )}
+
+      </div>
     </motion.div>
-  );
+  )
 }

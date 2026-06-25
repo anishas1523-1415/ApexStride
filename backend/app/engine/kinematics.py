@@ -39,6 +39,8 @@ class KinematicsEngine:
         "left_hip": ("LEFT_SHOULDER", "LEFT_HIP", "LEFT_KNEE"),
         "right_wrist": ("RIGHT_ELBOW", "RIGHT_WRIST", "RIGHT_INDEX"),
         "left_wrist": ("LEFT_ELBOW", "LEFT_WRIST", "LEFT_INDEX"),
+        "head_drop": ("NOSE", "LEFT_SHOULDER", "LEFT_HIP"),
+        "spine_alignment": ("RIGHT_SHOULDER", "RIGHT_HIP", "RIGHT_KNEE"),
     }
 
     # ------------------------------------------------------------------ #

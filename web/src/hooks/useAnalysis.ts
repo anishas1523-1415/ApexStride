@@ -15,7 +15,7 @@ export function useAnalysis() {
       const taskId = taskRes.task_id
       
       let attempts = 0
-      const maxAttempts = 60 // 2 minutes timeout
+      const maxAttempts = 300 // 10 minutes timeout
       
       const poll = async () => {
         if (attempts >= maxAttempts) {

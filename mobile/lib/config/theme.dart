@@ -20,7 +20,6 @@ class AppTheme {
       colorScheme: const ColorScheme.dark(
         primary: primary,
         secondary: secondary,
-        background: background,
         surface: card,
         error: error,
       ),
@@ -42,7 +41,7 @@ class AppTheme {
           textStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, letterSpacing: 1.2),
         ),
       ),
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData(
         color: card.withOpacity(0.8),
         elevation: 0,
         shape: RoundedRectangleBorder(

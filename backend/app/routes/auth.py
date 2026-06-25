@@ -41,6 +41,7 @@ class UserResponse(BaseModel):
         from_attributes = True
 
 async def get_current_user(token: str = Depends(oauth2_scheme), db: AsyncSession = Depends(get_async_db)) -> User:
+    print(f"DEBUG get_current_user received token: {token[:15]}...")
     user_id = verify_token(token, expected_type="access")
     if not user_id:
         raise HTTPException(
@@ -52,8 +53,32 @@ async def get_current_user(token: str = Depends(oauth2_scheme), db: AsyncSession
     result = await db.execute(select(User).filter(User.id == uuid.UUID(user_id)))
     user = result.scalar_one_or_none()
     
+    # Auto-create user if coming from Supabase and doesn't exist locally
     if not user:
-        raise HTTPException(status_code=404, detail="User not found")
+        # Decode again just to extract email if it exists (for Supabase JWTs)
+        from jose import jwt
+        import os
+        from app.utils.auth import ALGORITHM
+        try:
+            payload = jwt.decode(token, os.getenv("JWT_SECRET"), algorithms=[ALGORITHM], options={"verify_aud": False})
+            email = payload.get("email", f"{user_id}@supabase.user")
+        except:
+            email = f"{user_id}@supabase.user"
+            
+        user = User(
+            id=uuid.UUID(user_id),
+            username=email.split("@")[0],
+            email=email,
+            hashed_password="SUPABASE_MANAGED_USER"
+        )
+        db.add(user)
+        try:
+            await db.commit()
+            await db.refresh(user)
+        except Exception:
+            await db.rollback()
+            raise HTTPException(status_code=500, detail="Failed to sync Supabase user to local database")
+            
     return user
 
 @router.post("/signup", response_model=UserResponse)

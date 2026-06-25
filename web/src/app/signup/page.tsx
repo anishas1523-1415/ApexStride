@@ -7,6 +7,8 @@ import { createClient } from '@/utils/supabase/client'
 export default function SignupPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [name, setName] = useState('')
+  const [sport, setSport] = useState('Cricket')
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
@@ -23,6 +25,10 @@ export default function SignupPage() {
       password,
       options: {
         emailRedirectTo: `${location.origin}/auth/callback`,
+        data: {
+          full_name: name,
+          preferred_sport: sport,
+        }
       },
     })
 
@@ -64,6 +70,18 @@ export default function SignupPage() {
           <form className="mt-8 space-y-6" onSubmit={handleSignup}>
             <div className="space-y-4">
               <div>
+                <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-1.5">Full Name</label>
+                <input
+                  name="name"
+                  type="text"
+                  required
+                  className="appearance-none block w-full px-4 py-3.5 border border-white/10 bg-slate-950/80 text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all sm:text-sm font-medium"
+                  placeholder="Athlete Name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                />
+              </div>
+              <div>
                 <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-1.5">Email Address</label>
                 <input
                   name="email"
@@ -86,6 +104,22 @@ export default function SignupPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
+              </div>
+              <div>
+                <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-1.5">Primary Sport</label>
+                <select
+                  name="sport"
+                  className="appearance-none block w-full px-4 py-3.5 border border-white/10 bg-slate-950/80 text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all sm:text-sm font-medium"
+                  value={sport}
+                  onChange={(e) => setSport(e.target.value)}
+                >
+                  <option value="Cricket">Cricket</option>
+                  <option value="Football">Football</option>
+                  <option value="Weightlifting">Weightlifting</option>
+                  <option value="Badminton">Badminton</option>
+                  <option value="Athlete Running">Athlete Running</option>
+                  <option value="Tennis">Tennis</option>
+                </select>
               </div>
             </div>
 
