@@ -1,8 +1,28 @@
-import { type NextRequest } from 'next/server'
-import { updateSession } from '@/utils/supabase/middleware'
+import { type NextRequest, NextResponse } from 'next/server';
 
-export async function middleware(request: NextRequest) {
-  return await updateSession(request)
+export function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+  const token = request.cookies.get('access_token')?.value;
+
+  // Redirect authenticated users away from auth pages
+  if (token && (pathname === '/auth/login' || pathname === '/auth/signup')) {
+    return NextResponse.redirect(new URL('/dashboard', request.url));
+  }
+
+  // Redirect unauthenticated users away from protected pages
+  if (
+    !token &&
+    (
+      pathname === '/dashboard' ||
+      pathname === '/upload' ||
+      pathname === '/profile' ||
+      pathname.startsWith('/analysis')
+    )
+  ) {
+    return NextResponse.redirect(new URL('/auth/login', request.url));
+  }
+
+  return NextResponse.next();
 }
 
 export const config = {
@@ -12,8 +32,7 @@ export const config = {
      * - _next/static (static files)
      * - _next/image (image optimization files)
      * - favicon.ico (favicon file)
-     * Feel free to modify this pattern to include more paths.
      */
-    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+    '/((?!_next/static|_next/image|favicon.ico).*)',
   ],
-}
+};

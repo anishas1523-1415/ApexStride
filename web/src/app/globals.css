@@ -1,55 +1,105 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-@theme {
-  --color-background: #050810;
-  --color-card: rgba(255, 255, 255, 0.05);
-  --color-primary: #10B981;
-  --color-error: #EF4444;
-  --color-warning: #F59E0B;
-  
-  --animate-pulse-slow: pulse-slow 8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-  
-  @keyframes pulse-slow {
-    0%, 100% { opacity: 0.2; transform: scale(1); }
-    50% { opacity: 0.3; transform: scale(1.05); }
-  }
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-:root {
-  --background: #050810;
-  --card: rgba(255, 255, 255, 0.05);
-  --primary: #10B981;
-  --error: #EF4444;
-  --warning: #F59E0B;
-  --text-main: #F1F5F9;
-  --text-muted: #94A3B8;
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  color: var(--text-main);
-  background: radial-gradient(ellipse at top, #0f172a, #050810, #000000);
-  font-family: var(--font-sans);
+  background: #000000;
+  color: #ffffff;
+  font-family: 'Inter', system-ui, sans-serif;
 }
 
-.glass-card {
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 255, 0, 0.05);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 255, 0, 0.3);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 255, 0, 0.5);
+}
+
+/* Glass morphism */
+.glass {
   background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 1rem;
 }
 
-.glow-cyan {
-  box-shadow: 0 0 20px rgba(34, 211, 238, 0.4);
+.glass-dark {
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.glow-cyan-hover:hover {
-  box-shadow: 0 0 30px rgba(34, 211, 238, 0.6);
+/* Neon text effects */
+.neon-text {
+  text-shadow: 0 0 10px currentColor, 0 0 20px currentColor;
 }
 
-.text-gradient {
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-image: linear-gradient(to right, #22d3ee, #34d399);
+.neon-text-green {
+  color: #00FF00;
+  text-shadow: 0 0 10px rgba(0, 255, 0, 0.8), 0 0 20px rgba(0, 255, 0, 0.4);
+}
+
+.neon-text-cyan {
+  color: #00FFFF;
+  text-shadow: 0 0 10px rgba(0, 255, 255, 0.8), 0 0 20px rgba(0, 255, 255, 0.4);
+}
+
+/* Focus ring */
+button:focus-visible,
+input:focus-visible,
+a:focus-visible {
+  outline: 2px solid #00FF00;
+  outline-offset: 2px;
+}
+
+/* Animation utilities */
+@keyframes slideInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-slide-in-down {
+  animation: slideInDown 0.5s ease-out;
+}
+
+.animate-slide-in-up {
+  animation: slideInUp 0.5s ease-out;
 }
